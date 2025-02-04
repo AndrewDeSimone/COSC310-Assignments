@@ -71,12 +71,13 @@ public class ParsingPerformance {
                 rearMax = array[i][1];
             }
         }
+        long end = System.nanoTime();
+
         System.out.println("Front");
         System.out.println("Minimum: "+frontMin + " Maximum: "+frontMax + " Average: "+frontTotal/array.length);
         System.out.println("Rear");
         System.out.println("Minimum: "+rearMin + " Maximum: "+rearMax + " Average: "+rearTotal/array.length);
 
-        long end = System.nanoTime();
         return end - start;
     }
     protected long calculateStatsList() {
@@ -104,12 +105,13 @@ public class ParsingPerformance {
                 rearMax = list.get(i)[1];
             }
         }
+        long end = System.nanoTime();
+        
         System.out.println("Front");
         System.out.println("Minimum: "+frontMin + " Maximum: "+frontMax + " Average: "+frontTotal/array.length);
         System.out.println("Rear");
         System.out.println("Minimum: "+rearMin + " Maximum: "+rearMax + " Average: "+rearTotal/array.length);
 
-        long end = System.nanoTime();
         return end - start;
     }
 }
