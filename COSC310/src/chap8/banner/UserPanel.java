@@ -25,6 +25,7 @@ public class UserPanel extends JPanel {
     private JButton addButton;
     private JButton updateButton;
     // DECLARE A DELETE BUTTON HERE
+    private JButton deleteButton;
     private JButton saveButton;
     private JButton loadButton;
     private JButton sortButton;
@@ -121,6 +122,8 @@ public class UserPanel extends JPanel {
         addButton = new JButton("Add User");
         updateButton = new JButton("Update User");
         updateButton.setVisible(false);
+        deleteButton = new JButton("Delete User");
+        deleteButton.setVisible(false);
         // INITIALIZE AND HIDE THE DELETE BUTTON HERE
         saveButton = new JButton("Save Users");
         loadButton = new JButton("Load Users");
@@ -128,6 +131,7 @@ public class UserPanel extends JPanel {
         buttonPanel.add(updateButton, gbc);
         // ADD THE HIDDEN DELETE BUTTON TO THE PANEL
         buttonPanel.add(saveButton, gbc);
+        buttonPanel.add(deleteButton, gbc);
         buttonPanel.add(loadButton, gbc);
         add(buttonPanel, gbc);
         addButton.addActionListener(new ActionListener() {
@@ -143,6 +147,12 @@ public class UserPanel extends JPanel {
             }
         });
         // REGISTER A HANDLER FOR THE DELETE BUTTON HERE
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteUser();
+            }
+        });
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -226,6 +236,7 @@ public class UserPanel extends JPanel {
         this.selectedUser = u;
         addButton.setVisible(false);
         updateButton.setVisible(true);
+        deleteButton.setVisible(true);
         // MAKE THE DELETE BUTTON VISIBLE
         nameBox.setText(u.getName());
         idBox.setText(u.getId());
@@ -240,9 +251,8 @@ public class UserPanel extends JPanel {
     public void updateUser() {
         this.selectedUser.setName(nameBox.getText());
         this.selectedUser.setId(idBox.getText());
-
-        // finish updating the user below!
-        // add your code here
+        this.selectedUser.setUsername(usernameBox.getText());
+        this.selectedUser.setPassword(passwordBox.getText());
 
         // now that we have updated the user, let's tell the userListPanel to update the list
         userListPanel.updateUserList(allusers);
@@ -250,6 +260,7 @@ public class UserPanel extends JPanel {
         addButton.setVisible(true);
         updateButton.setVisible(false);
         // HIDE THE DELETE BUTTON TOO!
+        deleteButton.setVisible(false);
 
         nameBox.setText("");
         idBox.setText("");
@@ -260,7 +271,14 @@ public class UserPanel extends JPanel {
 
      // finish this deleteUser method AND call it from the delete button's action listener which you also need to add alongside the other action listeners
      public void deleteUser() {
-        // add your code here
-        // look at updateUser to get an idea of all the kinds of things you need to do
+        allusers.remove(selectedUser);
+        userListPanel.updateUserList(allusers);
+        addButton.setVisible(true);
+        updateButton.setVisible(false);
+        deleteButton.setVisible(false);
+        nameBox.setText("");
+        idBox.setText("");
+        usernameBox.setText("");
+        passwordBox.setText("");
       }
 }
