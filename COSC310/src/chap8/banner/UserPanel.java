@@ -23,10 +23,15 @@ public class UserPanel extends JPanel {
     private JTextField passwordBox;
     private JComboBox<String> typeDropdown;
     private JButton addButton;
+    private JButton updateButton;
+    // DECLARE A DELETE BUTTON HERE
     private JButton saveButton;
     private JButton loadButton;
+    private JButton sortButton;
     private UserListPanel userListPanel;
     private ArrayList<User> allusers;
+    private User selectedUser; // the current user being edited if the user has selected a user from the users list
+    private boolean reverseSort = false;
 
     public UserPanel(UserListPanel userListPanel, ArrayList<User> allusers) {
         this.userListPanel = userListPanel;
@@ -91,6 +96,22 @@ public class UserPanel extends JPanel {
         typeDropdown = new JComboBox<>(Main.userTypes);
         add(typeDropdown, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.anchor = GridBagConstraints.CENTER;
+        sortButton = new JButton("Sort");
+        add(sortButton, gbc);
+        sortButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                java.util.Collections.sort(allusers);
+                if (reverseSort) {
+                    java.util.Collections.reverse(allusers);
+                }
+                reverseSort = !reverseSort;
+                userListPanel.updateUserList(allusers);
+            }
+        });
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.fill = GridBagConstraints.NONE;
@@ -98,9 +119,14 @@ public class UserPanel extends JPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
         addButton = new JButton("Add User");
+        updateButton = new JButton("Update User");
+        updateButton.setVisible(false);
+        // INITIALIZE AND HIDE THE DELETE BUTTON HERE
         saveButton = new JButton("Save Users");
         loadButton = new JButton("Load Users");
         buttonPanel.add(addButton, gbc);
+        buttonPanel.add(updateButton, gbc);
+        // ADD THE HIDDEN DELETE BUTTON TO THE PANEL
         buttonPanel.add(saveButton, gbc);
         buttonPanel.add(loadButton, gbc);
         add(buttonPanel, gbc);
@@ -110,6 +136,13 @@ public class UserPanel extends JPanel {
                 addUser();
             }
         });
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateUser();
+            }
+        });
+        // REGISTER A HANDLER FOR THE DELETE BUTTON HERE
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -163,10 +196,10 @@ public class UserPanel extends JPanel {
 
     private void addUser() {
         String name = nameBox.getText();
-        String id = idBox.getText();
+        String type = (String) typeDropdown.getSelectedItem();
         String username = usernameBox.getText();
         String password = passwordBox.getText();
-        String type = (String) typeDropdown.getSelectedItem();
+        String id = idBox.getText();
         if (!name.isEmpty() && type != null) {
             if (type.equals("Student")) {
                 allusers.add(new Student(name, id, username, password));
@@ -178,20 +211,56 @@ public class UserPanel extends JPanel {
                 allusers.add(new Admin(name, id, username, password));
             }
             nameBox.setText("");
+            idBox.setText("");
+            usernameBox.setText("");
+            passwordBox.setText("");
             userListPanel.updateUserList(allusers);
         } else {
             JOptionPane.showMessageDialog(this, "Please enter a name and select a type.", "Input Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    // b/c we have a reference to the User stored in our global allusers array, we can just update the User object directly instead of having to mess with some kind of index into the list
+    // BUT that update doesn't happen until the user clicks the update button ... so we need to save a reference to the selected user so we can update it later in our updateUser method
     public void loadUser(User u) {
-        // we must be editing a user ... change what is displayed in the addButton
-        addButton.setText("Save Changes");
+        this.selectedUser = u;
+        addButton.setVisible(false);
+        updateButton.setVisible(true);
+        // MAKE THE DELETE BUTTON VISIBLE
         nameBox.setText(u.getName());
         idBox.setText(u.getId());
-        // finish loading the boxes     
         usernameBox.setText(u.getUsername());
         passwordBox.setText(u.getPassword());
         typeDropdown.setSelectedItem(u.getType());
+        // finish loading the boxes        
+        // add your code here
     }
+
+    // b/c we have a reference to the User currently being edited, we can just update the User object directly instead of having to mess with some kind of index into the list
+    public void updateUser() {
+        this.selectedUser.setName(nameBox.getText());
+        this.selectedUser.setId(idBox.getText());
+
+        // finish updating the user below!
+        // add your code here
+
+        // now that we have updated the user, let's tell the userListPanel to update the list
+        userListPanel.updateUserList(allusers);
+        // restore the UI to prepare it for adding a new user
+        addButton.setVisible(true);
+        updateButton.setVisible(false);
+        // HIDE THE DELETE BUTTON TOO!
+
+        nameBox.setText("");
+        idBox.setText("");
+        usernameBox.setText("");
+        passwordBox.setText("");
+        
+     }
+
+     // finish this deleteUser method AND call it from the delete button's action listener which you also need to add alongside the other action listeners
+     public void deleteUser() {
+        // add your code here
+        // look at updateUser to get an idea of all the kinds of things you need to do
+      }
 }
