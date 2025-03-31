@@ -131,6 +131,24 @@ public class Tree<E> {
         return size()==0?"EMPTY":toString(root, 0);
     }
 
+    public long height() {
+        return root==null?0:height(root,0);
+    }
+
+    private long height(TreeNode<E> n, long height) {
+        height += 1;
+        long maxHeight = height;
+
+        if (n.children != null) {
+            for(int i = 0; i < n.children.size(); i++) {
+                long newHeight = height(n.children.get(i), height);
+                if (newHeight > maxHeight) maxHeight = newHeight;
+            }
+        }
+
+        return maxHeight;
+    }
+
     public String toString(TreeNode<E> n, int indent) {
         String spacestring = " ".repeat(indent);
         String result = spacestring + n.data.toString() + "\n";
